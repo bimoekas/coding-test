@@ -21,5 +21,11 @@ class Student extends Model
         'gender',
         'address',
         'entry_year',
+        'photo',
     ];
+
+    public function subject()
+    {
+        return $this->belongsToMany(Subject::class, 'student_subject', 'student_id', 'subject_id');
+    }
 }
