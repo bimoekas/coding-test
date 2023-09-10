@@ -7,8 +7,8 @@ services:
         uid: 1000
       context: ./
       dockerfile: Dockerfile
-    image: ktfsfrtz
-    container_name: ktfsfrtz-app
+    image: backend-knowledge-test
+    container_name: coding-test
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
@@ -16,25 +16,23 @@ services:
     networks:
       - net
 
-  db:
+  mysql:
     image: mysql:8.0
-    container_name: ktfsfrtz-db
+    container_name: mysql-container
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_USER: ${DB_USERNAME}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      MYSQL_ROOT_PASSWORD: 
+      MYSQL_DATABASE: coding_test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 
     volumes:
-      - ./docker/mysql:/docker-entrypoint-initdb.d
-    networks:
-      - net
+      - ./mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   nginx:
     image: nginx:1.23
-    container_name: ktfsfrtz-nginx
+    container_name: backend-knowledge-test-nginx
     restart: unless-stopped
     ports:
       - 8000:80
@@ -43,6 +41,21 @@ services:
       - ./docker/nginx:/etc/nginx/conf.d
     networks:
       - net
+
+  frontend:
+    build:
+      context: ../coding-test-frontend
+      dockerfile: Dockerfile
+    image: frontend-knowledge-test
+    container_name: coding-test-frontend
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ../coding-test-frontend:/var/www
+    networks:
+      - net
+    ports:
+      - "3000:3000"
 
 networks:
   net:
