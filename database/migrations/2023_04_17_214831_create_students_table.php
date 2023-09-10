@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('id');
             $table->string('student_id')->unique();
             $table->string('name');
-            $table->enum('gender', ['L', 'P']);
-            $table->text('address');
+            $table->enum('gender', ['male', 'female']);
+            $table->text('address')->nullable();
             $table->year('entry_year');
             $table->string('photo')->nullable();
             $table->timestamps();

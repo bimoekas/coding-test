@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Repositories\RegisteredUserRepositories;
+use App\Repositories\RegisteredUserRepository;
 use App\Services\FileUploader;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -16,16 +16,13 @@ use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
-    public function __construct(private RegisteredUserRepositories $repo)
-    {
-    }
 
     /**
      * Handle an incoming registration request.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): Response
+    public function store(Request $request, RegisteredUserRepository $repo): Response
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -34,7 +31,7 @@ class RegisteredUserController extends Controller
             'photo' => ['required', 'image'],
         ]);
 
-        $user = $this->repo->create($validated);
+        $user = $repo->create($validated);
 
         event(new Registered($user));
 
